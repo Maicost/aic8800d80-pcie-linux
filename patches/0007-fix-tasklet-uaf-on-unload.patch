@@ -1,0 +1,17 @@
+--- a/drivers/aic8800/aic8800_fdrv/rwnx_main.c
++++ b/drivers/aic8800/aic8800_fdrv/rwnx_main.c
+@@ -6368,6 +6368,14 @@
+ #endif
+ 	wiphy_unregister(rwnx_hw->wiphy);
+ 	rwnx_radar_detection_deinit(&rwnx_hw->radar);
++#ifdef AICWF_PCIE_SUPPORT
++	/* A IRQ so e liberada no aicwf_pcie_remove, depois deste deinit: sem isto o
++	 * handler reagenda o tasklet sobre rwnx_hw e BARs ja liberados (oops no rmmod). */
++	if (rwnx_hw->pcidev) {
++		rwnx_hw->pcidev->rwnx_hw = NULL;
++		synchronize_irq(rwnx_hw->pcidev->pci_dev->irq);
++	}
++#endif
+ 	rwnx_platform_off(rwnx_hw, NULL);
+ #ifdef CONFIG_CACHE_GUARD
+ 	kmem_cache_destroy(rwnx_hw->sw_txhdr_cache);

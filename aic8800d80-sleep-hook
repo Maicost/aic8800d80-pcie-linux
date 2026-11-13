@@ -1,0 +1,19 @@
+#!/bin/sh
+# Instalado em /usr/lib/systemd/system-sleep/aic8800d80 (base: aur/aic8800d80-sleep-hook).
+# O driver nao sobrevive ao suspend carregado: descarrega antes e recarrega depois.
+
+case "$1" in
+  pre)
+    /usr/bin/modprobe -r aic8800D80_fdrv >/dev/null 2>&1 || true
+    ;;
+  post)
+    /usr/bin/modprobe aic8800D80_fdrv >/dev/null 2>&1 || true
+    # O wpa_supplicant fica preso ao netdev antigo e todo scan falha (SCAN-FAILED)
+    # ate ser reiniciado; espera a interface nova aparecer antes.
+    for _ in $(seq 1 30); do
+      [ -e /sys/class/net/wlp3s0 ] && break
+      sleep 0.5
+    done
+    /usr/bin/systemctl --no-block restart wpa_supplicant.service
+    ;;
+esac
