@@ -83,3 +83,9 @@ The driver source is GPL (`MODULE_LICENSE("GPL")`), copyright AICSemi / RivieraW
 firmware binaries in `src/fw/` are AICSemi's, redistributed unmodified from the vendor
 package. Patches 0001 to 0006 come from the AUR package maintainers. No warranty: this is an
 out-of-tree driver that has caused kernel panics during development.
+
+## AI assistance
+
+The debugging, patches 0007 and 0008, the BAR0 fix, the scripts and this documentation were
+developed with the help of an AI coding assistant (Claude Code, by Anthropic), directed and
+tested by the author on real hardware. Review the code before trusting it on your machine.
